@@ -29,6 +29,7 @@ interface HourlyForecastTableProps {
   hourlyData: WeatherPeriod[];
   loading: boolean;
   summary?: WeatherPeriod;
+  customTimeLabels?: { [key: string]: string };
 }
 
 const HourlyForecastTable: React.FC<HourlyForecastTableProps> = ({
@@ -36,6 +37,7 @@ const HourlyForecastTable: React.FC<HourlyForecastTableProps> = ({
   hourlyData,
   loading,
   summary,
+  customTimeLabels,
 }) => {
   if (loading) {
     return (
@@ -114,9 +116,13 @@ const HourlyForecastTable: React.FC<HourlyForecastTableProps> = ({
         </View>
 
         {/* Hourly Rows */}
-        {hourlyData.map((hour, idx) => (
-          <View key={hour?.startTime || idx} style={styles.tableRow}>
-            <Text style={styles.cell}>{hour && hour.startTime ? formatTime(hour.startTime) : "N/A"}</Text>
+        {hourlyData.map((hour, idx) => {
+          const timeKey = hour && hour.startTime ? formatTime(hour.startTime) : "N/A";
+          const displayTime = customTimeLabels && customTimeLabels[timeKey] ? customTimeLabels[timeKey] : timeKey;
+          
+          return (
+            <View key={hour?.startTime || idx} style={styles.tableRow}>
+              <Text style={styles.cell}>{displayTime}</Text>
             <Text style={styles.tempCell}>
               {hour && hour.temperature ? `${hour.temperature}°${hour.temperatureUnit || 'F'}` : "N/A"}
             </Text>
@@ -140,7 +146,8 @@ const HourlyForecastTable: React.FC<HourlyForecastTableProps> = ({
               {hour && hour.windSpeed && hour.windDirection ? getWindDisplay(hour.windSpeed, hour.windDirection) : "N/A"}
             </Text>
           </View>
-        ))}
+        );
+        })}
       </ScrollView>
     </View>
   );

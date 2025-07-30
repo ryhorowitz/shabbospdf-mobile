@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useShabbos } from '../context/shabbosContext';
-import DailyForecastCard from './DailyForecastCard';
 import HourlyForecastTable from './HourlyForecastTable';
 
 interface WeatherContainerProps {
@@ -60,7 +59,7 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
               styles.toggleButtonText,
               forecastType === 'daily' && styles.activeToggleButtonText
             ]}>
-              Daily
+              Hourly
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -74,31 +73,12 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
               styles.toggleButtonText,
               forecastType === 'hourly' && styles.activeToggleButtonText
             ]}>
-              Hourly
+              General
             </Text>
           </TouchableOpacity>
         </View>
 
         {forecastType === 'daily' ? (
-          <View style={styles.forecastContainer}>
-            {fridayPeriods && fridayPeriods.length > 0 && (
-              <DailyForecastCard
-                dayString="Friday"
-                periods={fridayPeriods}
-                summary={fridaySummary}
-                loading={loading}
-              />
-            )}
-            {saturdayPeriods && saturdayPeriods.length > 0 && (
-              <DailyForecastCard
-                dayString="Saturday"
-                periods={saturdayPeriods}
-                summary={saturdaySummary}
-                loading={loading}
-              />
-            )}
-          </View>
-        ) : (
           <View style={styles.forecastContainer}>
             {fridayHourly && fridayHourly.length > 0 && (
               <HourlyForecastTable
@@ -114,6 +94,39 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
                 hourlyData={saturdayHourly}
                 summary={saturdaySummary}
                 loading={loading}
+              />
+            )}
+          </View>
+        ) : (
+          <View style={styles.forecastContainer}>
+            {fridayPeriods && fridayPeriods.length > 0 && (
+              <HourlyForecastTable
+                dayString="Friday"
+                hourlyData={fridayPeriods}
+                summary={fridaySummary}
+                loading={loading}
+                customTimeLabels={{
+                  "4:00 PM": "4pm Afternoon",
+                  "8:00 PM": "8pm Evening", 
+                  "12:00 AM": "12am Night",
+                  "8:00 AM": "8am Morning",
+                  "12:00 PM": "12pm Noon"
+                }}
+              />
+            )}
+            {saturdayPeriods && saturdayPeriods.length > 0 && (
+              <HourlyForecastTable
+                dayString="Saturday"
+                hourlyData={saturdayPeriods}
+                summary={saturdaySummary}
+                loading={loading}
+                customTimeLabels={{
+                  "4:00 PM": "4pm Afternoon",
+                  "8:00 PM": "8pm Evening", 
+                  "12:00 AM": "12am Night",
+                  "8:00 AM": "8am Morning",
+                  "12:00 PM": "12pm Noon"
+                }}
               />
             )}
           </View>

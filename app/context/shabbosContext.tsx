@@ -301,8 +301,44 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
 
   const getShabbosHourlyForecasts = (candleData: CandleData) => {
-    // Use the same logic as getShabbosForecasts for consistency
-    return getShabbosForecasts(candleData);
+    // Return all hourly forecasts for Shabbos (every hour)
+    if (!candleData || !weatherData) {
+      return { friday: [], saturday: [] };
+    }
+
+    const candleItem = candleData.items.find(item => item.category === 'candles');
+    const havdalahItem = candleData.items.find(item => item.category === 'havdalah');
+
+    if (!candleItem || !havdalahItem) {
+      return { friday: [], saturday: [] };
+    }
+
+    const candleDate = new Date(candleItem.date);
+    const havdalahDate = new Date(havdalahItem.date);
+
+    // Friday: from 4pm to 11pm (candle lighting to end of Friday)
+    const fridayStart = new Date(candleDate);
+    fridayStart.setHours(16, 0, 0, 0);
+    const fridayEnd = new Date(candleDate);
+    fridayEnd.setHours(23, 59, 59, 999);
+
+    // Saturday: from 8am to 8pm (morning to evening)
+    const saturdayStart = new Date(candleDate.getTime() + 24 * 60 * 60 * 1000);
+    saturdayStart.setHours(8, 0, 0, 0);
+    const saturdayEnd = new Date(candleDate.getTime() + 24 * 60 * 60 * 1000);
+    saturdayEnd.setHours(20, 59, 59, 999);
+
+    const fridayHourly = weatherData.properties.periods.filter(period => {
+      const periodDate = new Date(period.startTime);
+      return periodDate >= fridayStart && periodDate <= fridayEnd;
+    });
+
+    const saturdayHourly = weatherData.properties.periods.filter(period => {
+      const periodDate = new Date(period.startTime);
+      return periodDate >= saturdayStart && periodDate <= saturdayEnd;
+    });
+
+    return { friday: fridayHourly, saturday: saturdayHourly };
   };
 
   const value: ShabbosContextType = {
