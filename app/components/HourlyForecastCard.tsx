@@ -16,14 +16,14 @@ interface WeatherPeriod {
   detailedForecast: string;
 }
 
-interface DailyForecastCardProps {
+interface HourlyForecastCardProps {
   dayString: string;
   periods: WeatherPeriod[];
   summary: any;
   loading: boolean;
 }
 
-const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
+const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
   dayString,
   periods,
   summary,
@@ -156,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DailyForecastCard; 
+export default HourlyForecastCard; 

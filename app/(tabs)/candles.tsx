@@ -7,18 +7,7 @@ export default function CandlesScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Candle Times</Text>
-          <Text style={styles.subtitle}>
-            View candle lighting and havdalah times for your location
-          </Text>
-        </View>
-
-        {/* Main Content */}
-        <View style={styles.content}>
-          <CandleTimes />
-        </View>
+        <CandleTimes />
       </ScrollView>
     </SafeAreaView>
   );

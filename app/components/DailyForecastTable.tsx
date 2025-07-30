@@ -24,7 +24,7 @@ interface WeatherPeriod {
   };
 }
 
-interface HourlyForecastTableProps {
+interface DailyForecastTableProps {
   dayString: string;
   hourlyData: WeatherPeriod[];
   loading: boolean;
@@ -32,7 +32,7 @@ interface HourlyForecastTableProps {
   customTimeLabels?: { [key: string]: string };
 }
 
-const HourlyForecastTable: React.FC<HourlyForecastTableProps> = ({
+const DailyForecastTable: React.FC<DailyForecastTableProps> = ({
   dayString,
   hourlyData,
   loading,
@@ -295,4 +295,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HourlyForecastTable; 
+export default DailyForecastTable; 

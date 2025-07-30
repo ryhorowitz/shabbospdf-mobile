@@ -298,8 +298,6 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }).filter(Boolean); // Remove undefined entries
   };
 
-
-
   const getShabbosHourlyForecasts = (candleData: CandleData) => {
     // Return all hourly forecasts for Shabbos (every hour)
     if (!candleData || !weatherData) {

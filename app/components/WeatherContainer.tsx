@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useShabbos } from '../context/shabbosContext';
-import HourlyForecastTable from './HourlyForecastTable';
+import DailyForecastTable from './DailyForecastTable';
+import HourlyForecastCard from './HourlyForecastCard';
 
 interface WeatherContainerProps {
   forecastType: 'daily' | 'hourly';
@@ -81,17 +82,17 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
         {forecastType === 'daily' ? (
           <View style={styles.forecastContainer}>
             {fridayHourly && fridayHourly.length > 0 && (
-              <HourlyForecastTable
+              <HourlyForecastCard
                 dayString="Friday"
-                hourlyData={fridayHourly}
+                periods={fridayHourly}
                 summary={fridaySummary}
                 loading={loading}
               />
             )}
             {saturdayHourly && saturdayHourly.length > 0 && (
-              <HourlyForecastTable
+              <HourlyForecastCard
                 dayString="Saturday"
-                hourlyData={saturdayHourly}
+                periods={saturdayHourly}
                 summary={saturdaySummary}
                 loading={loading}
               />
@@ -100,7 +101,7 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
         ) : (
           <View style={styles.forecastContainer}>
             {fridayPeriods && fridayPeriods.length > 0 && (
-              <HourlyForecastTable
+              <DailyForecastTable
                 dayString="Friday"
                 hourlyData={fridayPeriods}
                 summary={fridaySummary}
@@ -115,7 +116,7 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
               />
             )}
             {saturdayPeriods && saturdayPeriods.length > 0 && (
-              <HourlyForecastTable
+              <DailyForecastTable
                 dayString="Saturday"
                 hourlyData={saturdayPeriods}
                 summary={saturdaySummary}
