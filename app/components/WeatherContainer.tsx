@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useShabbos } from '../context/shabbosContext';
 import DailyForecastCard from './DailyForecastCard';
+import HourlyForecastTable from './HourlyForecastTable';
 
 interface WeatherContainerProps {
   forecastType: 'daily' | 'hourly';
@@ -99,7 +100,22 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
           </View>
         ) : (
           <View style={styles.forecastContainer}>
-            <Text style={styles.comingSoonText}>Hourly forecast coming soon...</Text>
+            {fridayHourly && fridayHourly.length > 0 && (
+              <HourlyForecastTable
+                dayString="Friday"
+                hourlyData={fridayHourly}
+                summary={fridaySummary}
+                loading={loading}
+              />
+            )}
+            {saturdayHourly && saturdayHourly.length > 0 && (
+              <HourlyForecastTable
+                dayString="Saturday"
+                hourlyData={saturdayHourly}
+                summary={saturdaySummary}
+                loading={loading}
+              />
+            )}
           </View>
         )}
       </View>

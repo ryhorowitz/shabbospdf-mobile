@@ -70,6 +70,7 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [candleLoading, setCandleLoading] = useState(true);
   const [candleError, setCandleError] = useState<string | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [dailyForecastData, setDailyForecastData] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherError, setWeatherError] = useState<string | null>(null);
 
@@ -183,15 +184,26 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
         
         const pointsData = await response.json();
-        const forecastUrl = pointsData.properties.forecast;
+        const hourlyForecastUrl = pointsData.properties.forecastHourly;
+        const dailyForecastUrl = pointsData.properties.forecast;
         
-        const forecastResponse = await fetch(forecastUrl);
-        if (!forecastResponse.ok) {
-          throw new Error('Failed to fetch weather forecast');
+        // Fetch hourly forecast for getShabbosForecasts
+        const hourlyResponse = await fetch(hourlyForecastUrl);
+        if (!hourlyResponse.ok) {
+          throw new Error('Failed to fetch hourly weather forecast');
         }
         
-        const weatherData: WeatherData = await forecastResponse.json();
-        setWeatherData(weatherData);
+        const hourlyData: WeatherData = await hourlyResponse.json();
+        setWeatherData(hourlyData);
+        
+        // Fetch daily forecast for getShabbosDailySummaries
+        const dailyResponse = await fetch(dailyForecastUrl);
+        if (!dailyResponse.ok) {
+          throw new Error('Failed to fetch daily weather forecast');
+        }
+        
+        const dailyData: WeatherData = await dailyResponse.json();
+        setDailyForecastData(dailyData);
       } catch (err) {
         console.error('Error fetching weather data:', err);
         setWeatherError(err instanceof Error ? err.message : 'Unknown error');
@@ -205,41 +217,92 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Helper functions for processing data
   const getShabbosForecasts = (candleData: CandleData) => {
-    if (!candleData || !weatherData) {
-      return { friday: [], saturday: [] };
+    // Use extractCandleItems to get Friday and Saturday dates
+    // Friday: 4pm (16), 8pm (20), 12am (0, Sat)
+    // Saturday: 8am (8), 12pm (12), 4pm (16), 8pm (20)
+    if (!candleData) return { friday: [], saturday: [] };
+    // Get Friday candle lighting date (should be Friday)
+    let fridayDate = null;
+    let saturdayDate = null;
+    try {
+      const candleItem = candleData.items.find(item => item.category === 'candles');
+      const havdalahItem = candleData.items.find(item => item.category === 'havdalah');
+      if (candleItem && candleItem.date) fridayDate = new Date(candleItem.date);
+      if (havdalahItem && havdalahItem.date)
+        saturdayDate = new Date(havdalahItem.date);
+      // For Saturday, use the date part of havdalah (should be Sat night)
+      if (saturdayDate) saturdayDate.setHours(0, 0, 0, 0);
+    } catch (e) {}
+    return {
+      friday: fridayDate
+        ? getForecastForDateAndHours(fridayDate, [16, 20, 0]).filter((period): period is WeatherPeriod => period !== undefined)
+        : [],
+      saturday: fridayDate
+        ? getForecastForDateAndHours(
+            new Date(fridayDate.getTime() + 24 * 60 * 60 * 1000),
+            [8, 12, 16, 20]
+          ).filter((period): period is WeatherPeriod => period !== undefined)
+        : [],
+    };
+  };
+
+  const getShabbosDailySummaries = (candleData: CandleData) => {
+    if (!candleData || !dailyForecastData) {
+      return { friday: null, saturday: null };
     }
 
     const candleItem = candleData.items.find(item => item.category === 'candles');
     const havdalahItem = candleData.items.find(item => item.category === 'havdalah');
 
     if (!candleItem || !havdalahItem) {
-      return { friday: [], saturday: [] };
+      return { friday: null, saturday: null };
     }
 
     const candleDate = new Date(candleItem.date);
     const havdalahDate = new Date(havdalahItem.date);
 
-    const fridayPeriods = weatherData.properties.periods.filter(period => {
+    // Find the daily summary for each day
+    const fridaySummary = dailyForecastData.properties.periods.find(period => {
       const periodDate = new Date(period.startTime);
-      return periodDate.toDateString() === candleDate.toDateString();
+      return periodDate.toDateString() === candleDate.toDateString() && period.isDaytime;
     });
 
-    const saturdayPeriods = weatherData.properties.periods.filter(period => {
+    const saturdaySummary = dailyForecastData.properties.periods.find(period => {
       const periodDate = new Date(period.startTime);
-      return periodDate.toDateString() === havdalahDate.toDateString();
+      return periodDate.toDateString() === havdalahDate.toDateString() && period.isDaytime;
     });
 
-    return { friday: fridayPeriods, saturday: saturdayPeriods };
+    return { friday: fridaySummary || null, saturday: saturdaySummary || null };
   };
 
-  const getShabbosDailySummaries = (candleData: CandleData) => {
-    // Placeholder for daily summaries
-    return { friday: null, saturday: null };
+  const getForecastForDateAndHours = (dateObj: Date, hoursArr: number[]) => {
+    if (!weatherData) return [];
+    // dateObj: JS Date, hoursArr: [16, 20, 0] etc.
+    return hoursArr.map((hour) => {
+      // For 0 (midnight), if date is Friday, midnight is technically Saturday
+      let targetDate = new Date(dateObj);
+      if (hour === 0) {
+        targetDate.setDate(targetDate.getDate() + 1);
+      }
+      targetDate.setHours(hour, 0, 0, 0);
+      // Find the period with matching startTime (local)
+      return weatherData.properties.periods.find((period) => {
+        const periodDate = new Date(period.startTime);
+        return (
+          periodDate.getFullYear() === targetDate.getFullYear() &&
+          periodDate.getMonth() === targetDate.getMonth() &&
+          periodDate.getDate() === targetDate.getDate() &&
+          periodDate.getHours() === targetDate.getHours()
+        );
+      });
+    }).filter(Boolean); // Remove undefined entries
   };
+
+
 
   const getShabbosHourlyForecasts = (candleData: CandleData) => {
-    // Placeholder for hourly forecasts
-    return { friday: [], saturday: [] };
+    // Use the same logic as getShabbosForecasts for consistency
+    return getShabbosForecasts(candleData);
   };
 
   const value: ShabbosContextType = {
