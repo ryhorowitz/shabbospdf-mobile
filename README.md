@@ -1,50 +1,112 @@
-# Welcome to your Expo app 👋
+# ShabbosPDF Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile app built with Expo that provides Shabbos weather forecasts and candle lighting times.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Candle Times**: Displays candle lighting and havdalah times for your location
+- **Weather Forecast**: Shows weather forecasts for Friday and Saturday
+- **Location Services**: Uses device GPS to get your current location
+- **Daily/Hourly Toggle**: Switch between daily and hourly forecast views
 
+## Tech Stack
+
+- **React Native** with Expo
+- **TypeScript** for type safety
+- **Expo Location** for GPS services
+- **Native Fetch API** for HTTP requests
+- **React Context** for state management
+
+## APIs Used
+
+- **Hebcal API**: For candle lighting times and Jewish calendar data
+- **Weather.gov API**: For weather forecasts
+- **BigDataCloud API**: For reverse geocoding (city/region lookup)
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- Expo CLI
+- iOS Simulator or Android Emulator (or physical device)
+
+### Installation
+
+1. Install dependencies:
    ```bash
    npm install
    ```
 
-2. Start the app
-
+2. Start the development server:
    ```bash
-   npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+3. Run on your preferred platform:
+   ```bash
+   npm run ios     # iOS Simulator
+   npm run android # Android Emulator
+   npm run web     # Web browser
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Project Structure
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+app/
+├── components/           # React Native components
+│   ├── CandleTimes.tsx   # Candle lighting times display
+│   ├── WeatherContainer.tsx # Weather forecast container
+│   └── DailyForecastCard.tsx # Daily weather card
+├── context/
+│   └── shabbosContext.tsx # App state management
+├── utils/
+│   └── candleDataUtils.ts # Candle data processing utilities
+└── (tabs)/
+    └── index.tsx         # Main app screen
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Key Components
 
-## Learn more
+### ShabbosProvider
+The main context provider that manages:
+- Location data and permissions
+- Candle times from Hebcal API
+- Weather data from Weather.gov API
+- Loading and error states
 
-To learn more about developing your project with Expo, look at the following resources:
+### CandleTimes
+Displays:
+- Current parshah (Torah portion)
+- Hebrew date
+- Candle lighting time
+- Havdalah time
+- Location information
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### WeatherContainer
+Shows weather forecasts with:
+- Daily/hourly toggle
+- Friday and Saturday forecasts
+- Temperature, wind, and conditions
 
-## Join the community
+## Permissions
 
-Join our community of developers creating universal apps.
+The app requires location permissions to:
+- Get your current coordinates
+- Fetch location-specific candle times
+- Retrieve weather data for your area
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Development Notes
+
+- Uses native `fetch()` instead of axios for HTTP requests
+- Implements proper TypeScript interfaces for all data structures
+- Follows React Native best practices for styling and layout
+- Uses Expo's location services for GPS functionality
+
+## Future Enhancements
+
+- PDF generation for weather reports
+- Push notifications for candle times
+- Offline support
+- Multiple location support
+- Customizable weather alerts
