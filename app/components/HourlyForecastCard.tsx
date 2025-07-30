@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { getWeatherIcon } from '../utils/weatherIconMapping';
+import { formatTime, getWindDisplay, cleanDetailedForecast } from '../utils/forecastUtils';
 
 interface WeatherPeriod {
   number: number;
@@ -14,6 +16,12 @@ interface WeatherPeriod {
   icon: string;
   shortForecast: string;
   detailedForecast: string;
+  probabilityOfPrecipitation?: {
+    value: number;
+  };
+  relativeHumidity?: {
+    value: number;
+  };
 }
 
 interface HourlyForecastCardProps {
@@ -31,61 +39,121 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <View style={styles.card}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading forecast...</Text>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>{dayString} Hourly Forecast</Text>
+        </View>
+        <View style={styles.content}>
+          <ActivityIndicator size="large" color="#007AFF" />
+          <Text style={styles.loadingText}>Loading hourly forecast...</Text>
+        </View>
       </View>
     );
   }
 
   if (!periods || periods.length === 0) {
     return (
-      <View style={styles.card}>
-        <Text style={styles.noDataText}>No forecast data available for {dayString}</Text>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>{dayString} Hourly Forecast</Text>
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.noDataText}>No hourly forecast available</Text>
+        </View>
       </View>
     );
   }
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.dayTitle}>{dayString}</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>{dayString}</Text>
+      </View>
       
-      {periods.map((period, index) => (
-        <View key={period.number} style={styles.periodContainer}>
-          <View style={styles.periodHeader}>
-            <Text style={styles.periodName}>{period.name}</Text>
-            <Text style={styles.temperature}>
-              {period.temperature}°{period.temperatureUnit}
-            </Text>
+      <ScrollView style={styles.content}>
+        {/* Daily summary */}
+        {summary && summary.shortForecast && (
+          <View style={styles.summaryContainer}>
+            <View style={styles.summaryContent}>
+              <Text style={styles.summaryIcon}>
+                {getWeatherIcon(summary.shortForecast, summary.isDaytime)}
+              </Text>
+              <View style={styles.summaryText}>
+                <Text style={styles.summaryForecast}>
+                  {summary.detailedForecast ? cleanDetailedForecast(summary.detailedForecast) : summary.shortForecast || 'No forecast available'}
+                </Text>
+                <View style={styles.summaryDetails}>
+                  {summary.probabilityOfPrecipitation && summary.probabilityOfPrecipitation.value !== null && (
+                    <Text style={styles.summaryDetail}>
+                      Precip: {summary.probabilityOfPrecipitation.value}%
+                    </Text>
+                  )}
+                  {summary.relativeHumidity && summary.relativeHumidity.value !== null && (
+                    <Text style={styles.summaryDetail}>
+                      Humidity: {summary.relativeHumidity.value}%
+                    </Text>
+                  )}
+                  {summary.windSpeed && summary.windDirection && (
+                    <Text style={styles.summaryDetail}>
+                      Wind: {summary.windSpeed} {summary.windDirection}
+                    </Text>
+                  )}
+                </View>
+              </View>
+            </View>
           </View>
-          
-          <Text style={styles.forecast}>{period.shortForecast}</Text>
-          
-          <View style={styles.details}>
-            <Text style={styles.detailText}>
-              Wind: {period.windSpeed} {period.windDirection}
-            </Text>
-            <Text style={styles.timeRange}>
-              {new Date(period.startTime).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })} - {new Date(period.endTime).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </Text>
-          </View>
+        )}
+
+        {/* Table Header */}
+        <View style={styles.tableHeader}>
+          <Text style={styles.headerCell}>Time</Text>
+          <Text style={styles.headerCell}>Temp</Text>
+          <Text style={styles.headerCell}>Weather</Text>
+          <Text style={styles.headerCell}>Precip</Text>
+          <Text style={styles.headerCell}>Wind</Text>
         </View>
-      ))}
+
+        {/* Hourly Rows */}
+        {periods.map((period, idx) => {
+          const timeKey = period && period.startTime ? formatTime(period.startTime) : "N/A";
+          
+          return (
+            <View key={period?.startTime || idx} style={styles.tableRow}>
+              <Text style={styles.cell}>{timeKey}</Text>
+              <Text style={styles.tempCell}>
+                {period && period.temperature ? `${period.temperature}°${period.temperatureUnit || 'F'}` : "N/A"}
+              </Text>
+              <View style={styles.weatherCell}>
+                <Text style={styles.weatherIcon}>
+                  {period?.shortForecast ? getWeatherIcon(period.shortForecast, period.isDaytime) : "🌤️"}
+                </Text>
+                <Text style={styles.weatherText} numberOfLines={2}>
+                  {period?.shortForecast || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.precipCell}>
+                <Text style={styles.precipIcon}>💧</Text>
+                <Text style={styles.precipText}>
+                  {period?.probabilityOfPrecipitation && period.probabilityOfPrecipitation.value !== null
+                    ? `${period.probabilityOfPrecipitation.value}%`
+                    : "0%"}
+                </Text>
+              </View>
+              <Text style={styles.windCell}>
+                {period && period.windSpeed && period.windDirection ? getWindDisplay(period.windSpeed, period.windDirection) : "N/A"}
+              </Text>
+            </View>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
+  container: {
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 16,
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: {
@@ -96,51 +164,20 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  dayTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    textAlign: 'center',
+  header: {
+    backgroundColor: '#007AFF',
+    padding: 12,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
-  periodContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
-    paddingVertical: 12,
-  },
-  periodHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  periodName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#495057',
-  },
-  temperature: {
+  headerTitle: {
+    color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#007AFF',
+    textAlign: 'center',
   },
-  forecast: {
-    fontSize: 14,
-    color: '#6c757d',
-    marginBottom: 8,
-  },
-  details: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  detailText: {
-    fontSize: 12,
-    color: '#6c757d',
-  },
-  timeRange: {
-    fontSize: 12,
-    color: '#6c757d',
-    fontStyle: 'italic',
+  content: {
+    padding: 16,
   },
   loadingText: {
     marginTop: 8,
@@ -153,6 +190,105 @@ const styles = StyleSheet.create({
     color: '#6c757d',
     textAlign: 'center',
     fontStyle: 'italic',
+  },
+  summaryContainer: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  summaryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  summaryIcon: {
+    fontSize: 40,
+    marginRight: 12,
+  },
+  summaryText: {
+    flex: 1,
+  },
+  summaryForecast: {
+    fontSize: 14,
+    color: '#495057',
+    marginBottom: 4,
+  },
+  summaryDetails: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  summaryDetail: {
+    fontSize: 12,
+    color: '#6c757d',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e9ecef',
+  },
+  headerCell: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#495057',
+    textAlign: 'center',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f8f9fa',
+  },
+  cell: {
+    flex: 1,
+    fontSize: 12,
+    color: '#495057',
+    textAlign: 'center',
+  },
+  tempCell: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    textAlign: 'center',
+  },
+  weatherCell: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  weatherIcon: {
+    fontSize: 16,
+    marginBottom: 2,
+  },
+  weatherText: {
+    fontSize: 10,
+    color: '#6c757d',
+    textAlign: 'center',
+  },
+  precipCell: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  precipIcon: {
+    fontSize: 12,
+    marginRight: 2,
+    opacity: 0.7,
+  },
+  precipText: {
+    fontSize: 12,
+    color: '#495057',
+  },
+  windCell: {
+    flex: 1,
+    fontSize: 10,
+    color: '#6c757d',
+    textAlign: 'center',
   },
 });
 
