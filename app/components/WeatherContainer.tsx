@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   content: {
-    padding: 16,
+    padding: 12,
   },
 
   toggleContainer: {
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e9ecef',
     borderRadius: 8,
     padding: 4,
-    marginBottom: 16,
+    marginBottom: 8,
   },
   toggleButton: {
     flex: 1,
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   forecastContainer: {
-    gap: 16,
+    gap: 8,
   },
   errorText: {
     fontSize: 16,

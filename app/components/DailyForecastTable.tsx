@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { getWeatherIcon } from '../utils/weatherIconMapping';
-import { formatTime, getWindDisplay, cleanDetailedForecast } from '../utils/forecastUtils';
+import { formatTime, getWindDisplay } from '../utils/forecastUtils';
+import DailySummary from './DailySummary';
 
 interface WeatherPeriod {
   number: number;
@@ -74,37 +75,7 @@ const DailyForecastTable: React.FC<DailyForecastTableProps> = ({
       
       <ScrollView style={styles.content}>
         {/* Daily summary */}
-        {summary && summary.shortForecast && (
-          <View style={styles.summaryContainer}>
-            <View style={styles.summaryContent}>
-              <Text style={styles.summaryIcon}>
-                {getWeatherIcon(summary.shortForecast, summary.isDaytime)}
-              </Text>
-              <View style={styles.summaryText}>
-                <Text style={styles.summaryForecast}>
-                  {summary.detailedForecast ? cleanDetailedForecast(summary.detailedForecast) : summary.shortForecast || 'No forecast available'}
-                </Text>
-                <View style={styles.summaryDetails}>
-                  {summary.probabilityOfPrecipitation && summary.probabilityOfPrecipitation.value !== null && (
-                    <Text style={styles.summaryDetail}>
-                      Precip: {summary.probabilityOfPrecipitation.value}%
-                    </Text>
-                  )}
-                  {summary.relativeHumidity && summary.relativeHumidity.value !== null && (
-                    <Text style={styles.summaryDetail}>
-                      Humidity: {summary.relativeHumidity.value}%
-                    </Text>
-                  )}
-                  {summary.windSpeed && summary.windDirection && (
-                    <Text style={styles.summaryDetail}>
-                      Wind: {summary.windSpeed} {summary.windDirection}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
+        <DailySummary summary={summary || null} />
 
         {/* Table Header */}
         <View style={styles.tableHeader}>
@@ -180,7 +151,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   content: {
-    padding: 16,
+    padding: 8,
   },
   loadingText: {
     marginTop: 8,
@@ -194,41 +165,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
-  summaryContainer: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-  },
-  summaryContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  summaryIcon: {
-    fontSize: 40,
-    marginRight: 12,
-  },
-  summaryText: {
-    flex: 1,
-  },
-  summaryForecast: {
-    fontSize: 14,
-    color: '#495057',
-    marginBottom: 4,
-  },
-  summaryDetails: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  summaryDetail: {
-    fontSize: 12,
-    color: '#6c757d',
-  },
   tableHeader: {
     flexDirection: 'row',
-    marginBottom: 8,
-    paddingBottom: 8,
+    marginBottom: 4,
+    paddingBottom: 4,
     borderBottomWidth: 1,
     borderBottomColor: '#e9ecef',
   },
@@ -242,7 +182,7 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 4,
     borderBottomWidth: 1,
     borderBottomColor: '#f8f9fa',
   },
