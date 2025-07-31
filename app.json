@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "shabbospdf-mobile",
+    "name": "Erev Shabbos Weather Report",
     "slug": "shabbospdf-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,15 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.shabbospdfmobile",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleDisplayName": "Erev Shabbos Weather",
+        "CFBundleName": "Erev Shabbos Weather Report",
+        "NSLocationWhenInUseUsageDescription": "This app needs your location to provide accurate weather forecasts and candle lighting times for your area.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs your location to provide accurate weather forecasts and candle lighting times for your area."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -44,6 +52,11 @@
 
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id-here"
+      }
     }
   }
 }
