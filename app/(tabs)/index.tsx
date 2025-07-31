@@ -36,7 +36,7 @@ export default function HomeScreen() {
       <ScrollView style={styles.scrollView}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Erev Shabbos Weather</Text>
+          <Text style={styles.title}>גוט שבת • Good Shabbos</Text>
           <Text style={styles.subtitle}>
           Welcome to the Erev Shabbos Weather App! Get current weather and candle lighting times to prepare for Shabbos. Download a printable PDF and stay informed for a calm, organized Shabbos.
           </Text>
@@ -46,10 +46,7 @@ export default function HomeScreen() {
         <View style={styles.content}>
           {/* Candle Times Preview */}
           {candleItem && (
-                        <TouchableOpacity 
-              style={styles.card}
-              onPress={() => router.replace('/candles')}
-            >
+           
               <View style={styles.previewSection}>                
                 {/* Parshah Section */}
                 {parshahItem && (
@@ -120,7 +117,6 @@ export default function HomeScreen() {
                 )}
               </View>
             </View>
-            </TouchableOpacity>
           )}
 
           {/* Weather Preview */}
@@ -179,17 +175,19 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f0f8ff',
+    paddingTop: 0,
   },
   scrollView: {
     flex: 1,
   },
   header: {
-    padding: 20,
+    paddingHorizontal: 16,
+    paddingTop: 0,
     paddingBottom: 8,
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
+    borderBottomColor: '#e3f2fd',
   },
   title: {
     fontSize: 24,
@@ -236,18 +234,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   previewSection: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     paddingHorizontal: 20,
     // paddingVertical: 8,
-    shadowColor: '#000',
+    shadowColor: '#1976d2',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
     elevation: 5,
+    borderWidth: 1,
+    borderColor: '#e3f2fd',
   },
   sectionTitle: {
     fontSize: 20,
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
   candleTime: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#212529',
+    color: '#1976d2',
     marginBottom: 4,
   },
   candleDate: {
@@ -290,18 +290,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   weatherDay: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 16,
     width: '48%',
-    shadowColor: '#000',
+    shadowColor: '#1976d2',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
     elevation: 5,
+    borderWidth: 1,
+    borderColor: '#e3f2fd',
   },
   dayTitle: {
     fontSize: 18,
@@ -324,7 +326,7 @@ const styles = StyleSheet.create({
   temperature: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#212529',
+    color: '#1976d2',
     marginBottom: 4,
   },
   forecast: {
