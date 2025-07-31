@@ -15,8 +15,7 @@ export default function HomeScreen() {
     candleError, 
     candleLoading, 
     candleData,
-    getShabbosDailySummaries,
-    weatherLoading
+    getShabbosDailySummaries
   } = useShabbos();
 
   // Extract candle items
@@ -248,11 +247,11 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
     borderWidth: 1,
     borderColor: '#dee2e6',
   },
@@ -304,11 +303,11 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
     borderWidth: 1,
     borderColor: '#dee2e6',
   },
@@ -349,10 +348,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });

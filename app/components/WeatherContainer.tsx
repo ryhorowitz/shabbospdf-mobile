@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useShabbos } from '../context/shabbosContext';
 import DailyForecastTable from './DailyForecastTable';

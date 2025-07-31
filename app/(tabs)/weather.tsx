@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import WeatherContainer from '../components/WeatherContainer';
 import { useShabbos } from '../context/shabbosContext';
 import LocationPermissionRequest from '../components/LocationPermissionRequest';
 
 export default function WeatherScreen() {
   const [forecastType, setForecastType] = useState<'daily' | 'hourly'>('daily');
-  const { geoData, candleError, candleLoading } = useShabbos();
+  const { candleError, candleLoading } = useShabbos();
 
   // Show location permission request if there's an error or still loading
   if (candleError || candleLoading) {

@@ -4,7 +4,6 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { useShabbos } from '../context/shabbosContext';
 import { extractCandleItems } from '../utils/candleDataUtils';
-import { cleanDetailedForecast } from '../utils/forecastUtils';
 import { getWeatherIcon } from '../utils/weatherIconMapping';
 
 interface PDFGeneratorProps {
