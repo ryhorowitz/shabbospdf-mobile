@@ -30,13 +30,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="candles"
-        options={{
-          title: 'Candle Times',
-          tabBarIcon: ({ color }) => <TabBarIcon name="clock-o" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="weather"
         options={{
           title: 'Weather',
