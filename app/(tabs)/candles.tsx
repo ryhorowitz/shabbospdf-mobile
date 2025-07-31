@@ -2,8 +2,17 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CandleTimes from '../components/CandleTimes';
+import { useShabbos } from '../context/shabbosContext';
+import LocationPermissionRequest from '../components/LocationPermissionRequest';
 
 export default function CandlesScreen() {
+  const { geoData, candleError, candleLoading } = useShabbos();
+
+  // Show location permission request if there's an error or still loading
+  if (candleError || candleLoading) {
+    return <LocationPermissionRequest />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>

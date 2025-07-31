@@ -78,19 +78,36 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     const getGeoData = async () => {
       try {
-        // Request location permissions
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setCandleError('Location permission denied');
+        setCandleLoading(true);
+        setCandleError(null);
+        
+        // Check if location services are enabled
+        const isEnabled = await Location.hasServicesEnabledAsync();
+        if (!isEnabled) {
+          setCandleError('Location services are disabled. Please enable location services in your device settings.');
           setCandleLoading(false);
           return;
         }
 
-        // Get current location
-        const location = await Location.getCurrentPositionAsync({});
-        const { latitude, longitude } = location.coords;
+        // Request location permissions
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setCandleError('Location permission denied. Please grant location permission to get accurate weather and candle times for your area.');
+          setCandleLoading(false);
+          return;
+        }
+
+        // Get current location with timeout and accuracy options
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+          timeInterval: 10000, // 10 second timeout
+        });
         
+        const { latitude, longitude } = location.coords;
         console.log(`Location: Latitude: ${latitude}, Longitude: ${longitude}`);
+        console.log('Position accuracy:', location.coords.accuracy, 'meters');
+        console.log('Location source:', location.coords.altitude ? 'GPS' : 'Simulator/Network');
+        console.log('Device timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone);
 
         // Get timezone
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -111,6 +128,9 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
           }
         } catch (reverseError) {
           console.error('Reverse geocoding failed:', reverseError);
+          // Fallback: use coordinates as location name
+          city = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+          region = 'Unknown';
         }
 
         // Create geoData object
@@ -121,9 +141,22 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
           region,
         };
         setGeoData(fallbackGeoData);
+        console.log('GeoData set successfully:', fallbackGeoData);
       } catch (error) {
         console.error('Geolocation error:', error);
-        setCandleError('Failed to get location data');
+        let errorMessage = 'Failed to get location data';
+        
+        if (error instanceof Error) {
+          if (error.message.includes('timeout')) {
+            errorMessage = 'Location request timed out. Please try again.';
+          } else if (error.message.includes('permission')) {
+            errorMessage = 'Location permission denied. Please grant permission in settings.';
+          } else if (error.message.includes('unavailable')) {
+            errorMessage = 'Location services unavailable. Please check your device settings.';
+          }
+        }
+        
+        setCandleError(errorMessage);
         setCandleLoading(false);
       }
     };

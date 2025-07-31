@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useShabbos } from '../context/shabbosContext';
 import DailyForecastTable from './DailyForecastTable';
 import HourlyForecastCard from './HourlyForecastCard';
+import PDFGenerator from './PDFGenerator';
 
 interface WeatherContainerProps {
   forecastType: 'daily' | 'hourly';
@@ -78,6 +79,9 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* PDF Generator */}
+        <PDFGenerator forecastType={forecastType} />
 
         {forecastType === 'daily' ? (
           <View style={styles.forecastContainer}>

@@ -2,10 +2,19 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useShabbos } from '../context/shabbosContext';
+import LocationPermissionRequest from '../components/LocationPermissionRequest';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { geoData, candleError, candleLoading } = useShabbos();
 
+  // Show location permission request if there's an error or still loading
+  if (candleError || candleLoading) {
+    return <LocationPermissionRequest />;
+  }
+
+  // Show main content if we have location data
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
@@ -18,6 +27,11 @@ export default function HomeScreen() {
             help you prepare for Shabbos. Download a printable PDF and stay
             informed for a peaceful and organized Shabbos experience.
           </Text>
+          {geoData && (
+            <Text style={styles.locationText}>
+              📍 {geoData.city}, {geoData.region}
+            </Text>
+          )}
         </View>
 
         {/* Main Content */}
@@ -58,7 +72,7 @@ export default function HomeScreen() {
             </View>
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>🌤️</Text>
-                              <Text style={styles.featureText}>General and hourly weather forecasts</Text>
+              <Text style={styles.featureText}>General and hourly weather forecasts</Text>
             </View>
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>⏰</Text>
@@ -97,6 +111,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#6c757d',
     lineHeight: 22,
+  },
+  locationText: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#28a745',
+    marginTop: 8,
+    fontWeight: '500',
   },
   content: {
     padding: 16,
