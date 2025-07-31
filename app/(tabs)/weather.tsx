@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import WeatherContainer from '../components/WeatherContainer';
 import { useShabbos } from '../context/shabbosContext';
 import LocationPermissionRequest from '../components/LocationPermissionRequest';
@@ -14,7 +15,10 @@ export default function WeatherScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+    colors={['#ff9a9e', '#fecfef']}     
+      style={styles.container}
+    >
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
           <View style={styles.section}>
@@ -25,14 +29,13 @@ export default function WeatherScreen() {
           </View>
         </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
   },
   scrollView: {
     flex: 1,

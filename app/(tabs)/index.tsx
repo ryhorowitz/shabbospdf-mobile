@@ -33,8 +33,8 @@ export default function HomeScreen() {
   // Show main content if we have location data
   return (
     <LinearGradient
-      colors={['#f8f9fa', '#e9ecef']}
-      style={styles.container}
+    colors={['#ff9a9e', '#fecfef']}     
+    style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
         <ScrollView style={styles.scrollView}>
@@ -192,8 +192,6 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 8,
     backgroundColor: 'transparent',
-    borderBottomWidth: 1,
-    borderBottomColor: '#dee2e6',
   },
   title: {
     fontSize: 24,
@@ -252,8 +250,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 8,
-    borderWidth: 1,
-    borderColor: '#dee2e6',
   },
   sectionTitle: {
     fontSize: 20,
@@ -308,8 +304,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 8,
-    borderWidth: 1,
-    borderColor: '#dee2e6',
   },
   dayTitle: {
     fontSize: 18,
