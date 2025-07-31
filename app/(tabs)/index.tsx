@@ -20,9 +20,9 @@ export default function HomeScreen() {
       <ScrollView style={styles.scrollView}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Erev Shabbos Weather Report</Text>
+          <Text style={styles.title}>Erev Shabbos Weather</Text>
           <Text style={styles.subtitle}>
-            Welcome to the Erev Shabbos Weather Report! This app provides you
+            Welcome to the Erev Shabbos Weather App! This app provides you
             with up-to-date weather forecasts and candle lighting times to
             help you prepare for Shabbos. Download a printable PDF and stay
             informed for a peaceful and organized Shabbos experience.
@@ -100,17 +100,17 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e9ecef',
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 12,
     color: '#212529',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
     color: '#6c757d',
-    lineHeight: 22,
+    lineHeight: 18,
   },
   locationText: {
     fontSize: 14,
