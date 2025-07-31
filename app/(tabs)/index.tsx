@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useShabbos } from '../context/shabbosContext';
 import LocationPermissionRequest from '../components/LocationPermissionRequest';
@@ -32,8 +33,12 @@ export default function HomeScreen() {
 
   // Show main content if we have location data
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+    <LinearGradient
+      colors={['#f8f9fa', '#e9ecef']}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView style={styles.scrollView}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>גוט שבת • Good Shabbos</Text>
@@ -169,14 +174,16 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f8ff',
-    paddingTop: 0,
+  },
+  safeArea: {
+    flex: 1,
   },
   scrollView: {
     flex: 1,
@@ -185,21 +192,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 0,
     paddingBottom: 8,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent',
     borderBottomWidth: 1,
-    borderBottomColor: '#e3f2fd',
+    borderBottomColor: '#dee2e6',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 12,
-    color: '#212529',
+    color: '#1a1a1a',
   },
   subtitle: {
     fontSize: 13,
     textAlign: 'center',
-    color: '#6c757d',
+    color: '#495057',
     lineHeight: 16,
   },
 
@@ -234,26 +241,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   previewSection: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent',
     borderRadius: 12,
     paddingHorizontal: 20,
-    // paddingVertical: 8,
-    shadowColor: '#1976d2',
+    paddingVertical: 12,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
     borderWidth: 1,
-    borderColor: '#e3f2fd',
+    borderColor: '#dee2e6',
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 4,
-    color: '#212529',
+    color: '#1a1a1a',
   },
   candlePreview: {
     flexDirection: 'row',
@@ -283,33 +290,33 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#212529',
+    color: '#1a1a1a',
   },
   weatherPreview: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   weatherDay: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent',
     borderRadius: 12,
     padding: 16,
     width: '48%',
-    shadowColor: '#1976d2',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
     borderWidth: 1,
-    borderColor: '#e3f2fd',
+    borderColor: '#dee2e6',
   },
   dayTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 4,
-    color: '#212529',
+    color: '#1a1a1a',
   },
   weatherContent: {
     flexDirection: 'column',
