@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as Location from 'expo-location';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface GeoData {
   loc: string;

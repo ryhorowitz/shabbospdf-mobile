@@ -10,21 +10,54 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.shabbospdfmobile",
+      "bundleIdentifier": "com.shabbospdf.weather",
       "buildNumber": "1",
       "infoPlist": {
         "CFBundleDisplayName": "Erev Shabbos Weather",
         "CFBundleName": "Erev Shabbos Weather Report",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
         "NSLocationWhenInUseUsageDescription": "This app needs your location to provide accurate weather forecasts and candle lighting times for your area.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs your location to provide accurate weather forecasts and candle lighting times for your area."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs your location to provide accurate weather forecasts and candle lighting times for your area.",
+        "UIApplicationShortcutItems": [
+          {
+            "UIApplicationShortcutItemTitle": "Shabbos Weather",
+            "UIApplicationShortcutItemType": "shabbos-weather"
+          }
+        ]
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#8B4513"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.shabbospdf.weather",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "shabbospdfmobile"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -49,14 +82,42 @@
         }
       ]
     ],
-
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "eas": {
-        "projectId": "your-project-id-here"
-      }
-    }
+        "projectId": "819116e2-8252-4546-b9d7-2be66aba8b6e"
+      },
+      "router": {}
+    },
+    "primaryColor": "#8B4513",
+    "privacy": "public",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "categories": [
+      "weather",
+      "lifestyle",
+      "utilities"
+    ],
+    "keywords": [
+      "Shabbos",
+      "weather",
+      "candle lighting",
+      "Jewish",
+      "weekend forecast",
+      "Shabbat times",
+      "Hebrew calendar",
+      "parshah"
+    ],
+    "description": "Get accurate weather forecasts and candle lighting times for Shabbos preparation. Plan your weekend with detailed hourly weather updates, printable PDF reports, and location-based Shabbos information. Perfect for families preparing for a peaceful and organized Shabbos.",
+    "owner": "ryanhorowitz",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {}
   }
 }
