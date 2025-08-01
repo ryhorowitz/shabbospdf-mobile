@@ -1,37 +1,8 @@
 import React from 'react';
-import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { formatTime, getWindDisplay } from '../utils/forecastUtils';
-import { getWeatherIcon } from '../utils/weatherIconMapping';
+
+import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
+import { DailyForecastTableProps } from '../../types';
 import DailySummary from './DailySummary';
-
-interface WeatherPeriod {
-  number: number;
-  name: string;
-  startTime: string;
-  endTime: string;
-  isDaytime: boolean;
-  temperature: number;
-  temperatureUnit: string;
-  windSpeed: string;
-  windDirection: string;
-  icon: string;
-  shortForecast: string;
-  detailedForecast: string;
-  probabilityOfPrecipitation?: {
-    value: number;
-  };
-  relativeHumidity?: {
-    value: number;
-  };
-}
-
-interface DailyForecastTableProps {
-  dayString: string;
-  hourlyData: WeatherPeriod[];
-  loading: boolean;
-  summary?: WeatherPeriod;
-  customTimeLabels?: { [key: string]: string };
-}
 
 const DailyForecastTable: React.FC<DailyForecastTableProps> = ({
   dayString,

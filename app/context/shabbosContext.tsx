@@ -1,45 +1,12 @@
 import * as Location from 'expo-location';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-interface GeoData {
-  loc: string;
-  timezone: string;
-  city: string;
-  region: string;
-}
-
-interface CandleItem {
-  title: string;
-  date: string;
-  hdate: string;
-  category: string;
-  hebrew: string;
-}
-
-interface CandleData {
-  items: CandleItem[];
-}
-
-interface WeatherPeriod {
-  number: number;
-  name: string;
-  startTime: string;
-  endTime: string;
-  isDaytime: boolean;
-  temperature: number;
-  temperatureUnit: string;
-  windSpeed: string;
-  windDirection: string;
-  icon: string;
-  shortForecast: string;
-  detailedForecast: string;
-}
-
-interface WeatherData {
-  properties: {
-    periods: WeatherPeriod[];
-  };
-}
+import {
+  CandleData,
+  GeoData,
+  WeatherData,
+  WeatherPeriod
+} from '../../types';
 
 interface ShabbosContextType {
   candleData: CandleData | null;

@@ -1,20 +1,4 @@
-interface CandleItem {
-  title: string;
-  date: string;
-  hdate: string;
-  category: string;
-  hebrew: string;
-}
-
-interface CandleData {
-  items: CandleItem[];
-}
-
-interface ExtractedItems {
-  candleItem: CandleItem | null;
-  parshahItem: CandleItem | null;
-  havdalahItem: CandleItem | null;
-}
+import { CandleData, ExtractedItems } from '../../types';
 
 export const extractCandleItems = (candleData: CandleData): ExtractedItems => {
   if (!candleData || !candleData.items) {
