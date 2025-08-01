@@ -63,4 +63,6 @@ export const getWeatherIcon = (shortForecast: string, isDaytime: boolean = true)
 
   // Default
   return "🌤️";
-}; 
+};
+
+export default { getWeatherIcon }; 

@@ -357,4 +357,6 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
       {children}
     </ShabbosContext.Provider>
   );
-}; 
+};
+
+export default ShabbosProvider; 

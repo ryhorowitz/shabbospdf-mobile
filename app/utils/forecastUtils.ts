@@ -61,4 +61,6 @@ export const formatTime = (startTime: string): string => {
 export const getWindDisplay = (windSpeed: string, windDirection: string): string => {
   if (!windSpeed || !windDirection) return "N/A";
   return `${windDirection} ${windSpeed}`;
-}; 
+};
+
+export default { cleanDetailedForecast, formatTime, getWindDisplay }; 

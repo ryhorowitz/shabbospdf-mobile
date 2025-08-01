@@ -23,8 +23,13 @@
           {
             "UIApplicationShortcutItemTitle": "Shabbos Weather",
             "UIApplicationShortcutItemType": "shabbos-weather"
+          },
+          {
+            "UIApplicationShortcutItemTitle": "Shabbos Weather",
+            "UIApplicationShortcutItemType": "shabbos-weather"
           }
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

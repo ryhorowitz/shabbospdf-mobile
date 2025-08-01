@@ -18,4 +18,6 @@ export const extractCandleItems = (candleData: CandleData): ExtractedItems => {
     parshahItem: parshahItem || null,
     havdalahItem: havdalahItem || null,
   };
-}; 
+};
+
+export default { extractCandleItems }; 
