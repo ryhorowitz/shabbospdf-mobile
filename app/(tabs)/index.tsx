@@ -1,8 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { cardStyles } from '../../constants/CommonStyles';
 import LocationPermissionRequest from '../components/LocationPermissionRequest';
 import { useShabbos } from '../context/shabbosContext';
 import { extractCandleItems } from '../utils/candleDataUtils';
@@ -206,7 +207,6 @@ const styles = StyleSheet.create({
     color: '#495057',
     lineHeight: 16,
   },
-
   locationText: {
     fontSize: 16,
     textAlign: 'center',
@@ -238,21 +238,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   previewSection: {
-    backgroundColor: 'transparent',
-    borderRadius: 12,
+    ...cardStyles.transparent,
     paddingHorizontal: 20,
     paddingVertical: 12,
-    ...(Platform.OS === 'ios' ? {
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 8,
-    } : {
-      // No shadows on Android
-    }),
   },
   sectionTitle: {
     fontSize: 20,
@@ -295,21 +283,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   weatherDay: {
-    backgroundColor: 'transparent',
-    borderRadius: 12,
-    padding: 16,
-    width: '48%',
-    ...(Platform.OS === 'ios' ? {
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 8,
-    } : {
-      // No shadows on Android
-    }),
+    ...cardStyles.weather,
   },
   dayTitle: {
     fontSize: 18,
@@ -341,20 +315,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   card: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 8,
-    ...(Platform.OS === 'ios' ? {
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 8,
-    } : {
-      // No shadows on Android
-    }),
+    ...cardStyles.base,
   },
 });
