@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
-import { getWeatherIcon } from '../utils/weatherIconMapping';
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { formatTime, getWindDisplay } from '../utils/forecastUtils';
+import { getWeatherIcon } from '../utils/weatherIconMapping';
 import DailySummary from './DailySummary';
 
 interface WeatherPeriod {
@@ -129,14 +129,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 12,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    ...(Platform.OS === 'ios' ? {
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 3.84,
+    } : {
+      // No shadows on Android
+    }),
   },
   header: {
     backgroundColor: '#007AFF',
