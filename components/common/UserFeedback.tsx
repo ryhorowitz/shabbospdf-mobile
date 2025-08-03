@@ -37,7 +37,8 @@ const UserFeedback: React.FC<UserFeedbackProps> = ({
       `Feedback Type: ${feedbackType}\n\nUser Feedback:\n${feedback}\n\nUser Email: ${email || 'Not provided'}\n\nApp Version: 1.0.0\nPlatform: ${Platform.OS}`
     );
     
-    const mailtoUrl = `mailto:admin@shabbosweather.com?subject=${subject}&body=${body}`;
+                const supportEmail = process.env.SUPPORT_EMAIL || "admin@shabbosweather.com";
+            const mailtoUrl = `mailto:${supportEmail}?subject=${subject}&body=${body}`;
     
     Alert.alert(
       'Submit Feedback',
@@ -100,7 +101,7 @@ const UserFeedback: React.FC<UserFeedbackProps> = ({
 
         <ScrollView style={styles.content}>
           <Text style={styles.description}>
-            We value your feedback! Please let us know about any issues you've encountered or suggestions you have for improving the app.
+            We value your feedback! Please let us know about any issues you&apos;ve encountered or suggestions you have for improving the app.
           </Text>
 
           <View style={styles.inputContainer}>

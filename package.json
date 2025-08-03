@@ -12,7 +12,9 @@
     "build:testflight": "eas build --platform ios --profile testflight",
     "submit:testflight": "eas submit --platform ios --profile testflight",
     "build:preview": "eas build --platform ios --profile preview",
-    "build:production": "eas build --platform ios --profile production"
+    "build:production": "eas build --platform ios --profile production",
+    "testflight:setup": "./scripts/testflight-setup.sh",
+    "setup:env": "./scripts/setup-env.sh"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

@@ -29,16 +29,14 @@
   "submit": {
     "testflight": {
       "ios": {
-        "appleId": "admin@shabbosweather.com",
-        "ascAppId": "your-app-store-connect-app-id",
-        "appleTeamId": "your-apple-team-id"
+        "ascAppId": "6749516433",
+        "appleTeamId": "ZJU37VPMP6"
       }
     },
     "production": {
       "ios": {
-        "appleId": "admin@shabbosweather.com",
-        "ascAppId": "your-app-store-connect-app-id",
-        "appleTeamId": "your-apple-team-id"
+        "ascAppId": "6749516433",
+        "appleTeamId": "ZJU37VPMP6"
       }
     }
   }

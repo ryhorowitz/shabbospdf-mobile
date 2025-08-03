@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shabbos Weather",
     "slug": "shabbospdf-mobile",
-    "version": "1.0.0",
+    "version": "${APP_VERSION:-1.0.0}",
     "orientation": "portrait",
     "icon": "./assets/images/icon-design4.png",
     "scheme": "shabbospdfmobile",
@@ -10,8 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.shabbospdf.weather",
-      "buildNumber": "1",
+      "bundleIdentifier": "${APP_BUNDLE_ID:-com.shabbospdf.weather}",
+      "buildNumber": "${APP_BUILD_NUMBER:-1}",
       "infoPlist": {
         "CFBundleDisplayName": "Shabbos Weather",
         "CFBundleName": "Shabbos Weather",

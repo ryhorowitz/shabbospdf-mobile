@@ -38,7 +38,8 @@ const ErrorState: React.FC<ErrorStateProps> = ({
             const body = encodeURIComponent(
               `Issue Type: ${errorType}\n\nError Message: ${message}\n\nPlease describe what you were doing when this error occurred:\n\n`
             );
-            const mailtoUrl = `mailto:admin@shabbosweather.com?subject=${subject}&body=${body}`;
+            const supportEmail = process.env.SUPPORT_EMAIL || "admin@shabbosweather.com";
+            const mailtoUrl = `mailto:${supportEmail}?subject=${subject}&body=${body}`;
             Linking.openURL(mailtoUrl);
           }
         }

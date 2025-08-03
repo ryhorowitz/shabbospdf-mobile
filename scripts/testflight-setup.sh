@@ -67,18 +67,32 @@ print_status "Configuration files found"
 # Check if required fields are configured
 print_status "Checking configuration..."
 
-# Check if Apple Team ID is configured
-if grep -q "your-apple-team-id" eas.json; then
-    print_warning "Apple Team ID not configured in eas.json"
-    echo "Please update eas.json with your Apple Team ID"
-    echo "You can find it at: https://developer.apple.com/account/membership/"
+# Check if .env file exists
+if [ ! -f ".env" ]; then
+    print_warning ".env file not found"
+    echo "Please create a .env file based on env.example"
+    echo "cp env.example .env"
+    echo "Then update the values in .env with your actual configuration"
 fi
 
-# Check if App Store Connect App ID is configured
-if grep -q "your-app-store-connect-app-id" eas.json; then
-    print_warning "App Store Connect App ID not configured in eas.json"
-    echo "Please update eas.json with your App Store Connect App ID"
-    echo "You can find it in App Store Connect after creating your app"
+# Check if required environment variables are set
+if [ -f ".env" ]; then
+    source .env
+    
+    if [ -z "$APPLE_TEAM_ID" ]; then
+        print_warning "APPLE_TEAM_ID not set in .env"
+    fi
+    
+    if [ -z "$ASC_APP_ID" ]; then
+        print_warning "ASC_APP_ID not set in .env"
+    fi
+    
+    if [ -z "$APPLE_ID" ]; then
+        print_warning "APPLE_ID not set in .env"
+    fi
+else
+    print_warning "Environment variables not configured"
+    echo "Please create a .env file with your configuration"
 fi
 
 print_status "Configuration check complete"

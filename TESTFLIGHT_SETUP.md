@@ -28,25 +28,38 @@ This guide will help you set up TestFlight for beta testing your Shabbos Weather
 2. Note the **App ID** (you'll need this for EAS configuration)
 3. Update `eas.json` with your actual App ID
 
-## Step 2: Update EAS Configuration
+## Step 2: Set Up Environment Variables
 
-Update the following values in `eas.json`:
+### 2.1 Create Environment File
+```bash
+# Run the environment setup script
+npm run setup:env
 
-```json
-{
-  "submit": {
-    "testflight": {
-      "ios": {
-        "appleId": "admin@shabbosweather.com",
-        "ascAppId": "YOUR_ACTUAL_APP_STORE_CONNECT_APP_ID",
-        "appleTeamId": "YOUR_APPLE_TEAM_ID"
-      }
-    }
-  }
-}
+# Or manually copy the template
+cp env.example .env
 ```
 
-### 2.1 Find Your Apple Team ID
+### 2.2 Update Environment Variables
+Edit the `.env` file with your actual values:
+
+```bash
+# Apple Developer Configuration
+APPLE_TEAM_ID=ZJU37VPMP6
+APPLE_ID=admin@shabbosweather.com
+ASC_APP_ID=6749516433
+
+# App Configuration
+APP_BUNDLE_ID=com.shabbospdf.weather
+APP_VERSION=1.0.0
+APP_BUILD_NUMBER=1
+
+# Support Email
+SUPPORT_EMAIL=admin@shabbosweather.com
+```
+
+**Important**: The `.env` file is gitignored and should never be committed to version control.
+
+### 2.3 Find Your Apple Team ID
 
 1. Go to [Apple Developer](https://developer.apple.com)
 2. Click "Membership" in the left sidebar
