@@ -22,7 +22,7 @@
 
 ### App Information
 
-- **App Name**: "Erev Shabbos Weather Report"
+- **App Name**: "Shabbos Weather"
 - **Subtitle**: 30 characters max
 - **Keywords**: 100 characters max
 - **Category**: Weather
@@ -32,7 +32,7 @@
 
 ### App Name
 
-"Erev Shabbos Weather Report"
+"Shabbos Weather"
 
 ### Subtitle (30 chars max)
 
@@ -81,7 +81,7 @@ Download now and make your Shabbos preparation easier and more organized!
 ### What's New in This Version
 
 ```
-Initial release of Erev Shabbos Weather Report!
+Initial release of Shabbos Weather!
 
 Features:
 • Accurate candle lighting times for your location

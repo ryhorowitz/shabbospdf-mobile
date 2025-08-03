@@ -52,6 +52,27 @@ export interface ExtractedItems {
   havdalahItem: CandleItem | null;
 }
 
+// Common UI State Interfaces
+export interface LoadingState {
+  loading: boolean;
+  error: string | null;
+}
+
+export interface AccordionState {
+  expanded: boolean;
+  loading: boolean;
+}
+
+// Zmanim Interfaces
+export interface ZmanimData {
+  [key: string]: string;
+}
+
+export interface ZmanimField {
+  label: string;
+  key: string;
+}
+
 // Component Props Interfaces
 export interface WeatherContainerProps {
   forecastType: 'daily' | 'hourly';
@@ -83,4 +104,50 @@ export interface PDFGeneratorProps {
 
 export interface LocationPermissionRequestProps {
   onPermissionGranted?: () => void;
+}
+
+// Common Component Props
+export interface ScreenLayoutProps {
+  children: React.ReactNode;
+  gradientColors?: string[];
+  safeAreaEdges?: ('top' | 'bottom' | 'left' | 'right')[];
+  scrollEnabled?: boolean;
+  contentPadding?: number;
+  style?: any;
+}
+
+export interface LoadingStateProps {
+  message?: string;
+  size?: 'small' | 'large';
+  color?: string;
+  style?: any;
+}
+
+export interface ErrorStateProps {
+  message: string;
+  style?: any;
+}
+
+export interface WeatherCardProps {
+  data: WeatherPeriod;
+  title?: string;
+  style?: any;
+}
+
+export interface CandleTimeCardProps {
+  label: string;
+  date: string | Date;
+  style?: any;
+}
+
+export interface ZmanimAccordionProps {
+  title: string;
+  date: Date;
+  time?: string;
+  expanded: boolean;
+  onToggle: () => void;
+  loading: boolean;
+  zmanimData: ZmanimData | null;
+  zmanimFields: ZmanimField[];
+  onExpand?: () => void;
 } 

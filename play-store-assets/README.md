@@ -11,7 +11,7 @@
   - 10-inch tablet: 1920 x 1200 px minimum
 
 ### App Information
-- **App Name**: "Erev Shabbos Weather Report"
+- **App Name**: "Shabbos Weather"
 - **Short Description**: 80 characters max
 - **Full Description**: 4000 characters max
 - **Category**: Weather

@@ -9,7 +9,16 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    },
+    "testflight": {
+      "distribution": "store",
+      "ios": {
+        "resourceClass": "m-medium"
+      }
     },
     "production": {
       "ios": {
@@ -18,9 +27,16 @@
     }
   },
   "submit": {
+    "testflight": {
+      "ios": {
+        "appleId": "admin@shabbosweather.com",
+        "ascAppId": "your-app-store-connect-app-id",
+        "appleTeamId": "your-apple-team-id"
+      }
+    },
     "production": {
       "ios": {
-        "appleId": "your-apple-id@example.com",
+        "appleId": "admin@shabbosweather.com",
         "ascAppId": "your-app-store-connect-app-id",
         "appleTeamId": "your-apple-team-id"
       }

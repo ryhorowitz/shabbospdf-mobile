@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { DailyForecastTableProps } from '../../types';
+import { formatTime, getWindDisplay } from '../utils/forecastUtils';
+import { getWeatherIcon } from '../utils/weatherIconMapping';
 import DailySummary from './DailySummary';
 
 const DailyForecastTable: React.FC<DailyForecastTableProps> = ({

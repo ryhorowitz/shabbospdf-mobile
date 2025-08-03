@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ErrorState from '../../components/common/ErrorState';
+import LoadingState from '../../components/common/LoadingState';
+import OfflineState from '../../components/common/OfflineState';
 import { useShabbos } from '../context/shabbosContext';
 import DailyForecastTable from './DailyForecastTable';
 import HourlyForecastCard from './HourlyForecastCard';
@@ -17,25 +20,56 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
   const {
     weatherLoading: loading,
     weatherError: error,
+    isOffline,
+    retryWeather,
     getShabbosForecasts,
     getShabbosDailySummaries,
     getShabbosHourlyForecasts,
     candleData,
   } = useShabbos();
 
+  // Show offline state if no internet connection
+  if (isOffline) {
+    return (
+      <OfflineState 
+        onRetry={retryWeather}
+        message="Weather data requires an internet connection. Please check your network and try again."
+      />
+    );
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <LoadingState 
+        loadingType="weather"
+        message="Loading weather forecast..."
+      />
+    );
+  }
+
+  // Show error state
   if (error) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Error loading weather data: {error}</Text>
-      </View>
+      <ErrorState 
+        message={error}
+        onRetry={retryWeather}
+        errorType="weather"
+        showRetry={true}
+        showReportIssue={true}
+      />
     );
   }
 
   if (!candleData) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>No candle data available</Text>
-      </View>
+      <ErrorState 
+        message="No candle data available. Please try refreshing the app."
+        onRetry={retryWeather}
+        errorType="general"
+        showRetry={true}
+        showReportIssue={true}
+      />
     );
   }
 
@@ -46,7 +80,6 @@ const WeatherContainer: React.FC<WeatherContainerProps> = ({
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
-
 
         {/* Forecast Type Toggle */}
         <View style={styles.toggleContainer}>

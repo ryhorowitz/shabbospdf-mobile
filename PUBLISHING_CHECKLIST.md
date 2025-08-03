@@ -17,7 +17,7 @@
 
 2. **Create App in Play Console**
    - Bundle ID: `com.shabbospdf.weather`
-   - App name: "Erev Shabbos Weather Report"
+   - App name: "Shabbos Weather"
 
 3. **Upload AAB File**
    - Upload: `shabbospdf-mobile-production.aab`
@@ -48,7 +48,7 @@
 
 2. **Create App in App Store Connect**
    - Bundle ID: `com.shabbospdf.weather`
-   - App name: "Erev Shabbos Weather Report"
+   - App name: "Shabbos Weather"
 
 3. **Upload iOS Build**
    - Upload the .ipa file from EAS build

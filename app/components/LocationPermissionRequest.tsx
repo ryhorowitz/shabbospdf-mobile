@@ -1,6 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import * as Location from 'expo-location';
+import React from 'react';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ErrorState from '../../components/common/ErrorState';
+import LoadingState from '../../components/common/LoadingState';
+import OfflineState from '../../components/common/OfflineState';
 import { useShabbos } from '../context/shabbosContext';
 
 interface LocationPermissionRequestProps {
@@ -10,7 +13,12 @@ interface LocationPermissionRequestProps {
 const LocationPermissionRequest: React.FC<LocationPermissionRequestProps> = ({ 
   onPermissionGranted 
 }) => {
-  const { candleError, candleLoading } = useShabbos();
+  const { 
+    candleError, 
+    candleLoading, 
+    isOffline,
+    retryLocation 
+  } = useShabbos();
 
   const requestLocationPermission = async () => {
     try {
@@ -52,74 +60,123 @@ const LocationPermissionRequest: React.FC<LocationPermissionRequestProps> = ({
     }
   };
 
+  // Show offline state if no internet connection
+  if (isOffline) {
+    return (
+      <OfflineState 
+        onRetry={retryLocation}
+        message="Location services require an internet connection for reverse geocoding. Please check your network and try again."
+      />
+    );
+  }
+
+  // Show loading state
   if (candleLoading) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Getting Your Location...</Text>
-        <Text style={styles.subtitle}>Please wait while we determine your location for accurate weather and candle times.</Text>
-      </View>
+      <LoadingState 
+        loadingType="location"
+        message="Getting your location..."
+      />
     );
   }
 
+  // Show error state
   if (candleError) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Location Required</Text>
-        <Text style={styles.subtitle}>
-          This app needs your location to provide accurate weather forecasts and candle lighting times for your area.
-        </Text>
-        <Text style={styles.errorText}>{candleError}</Text>
-        <TouchableOpacity style={styles.button} onPress={requestLocationPermission}>
-          <Text style={styles.buttonText}>Grant Location Permission</Text>
-        </TouchableOpacity>
-      </View>
+      <ErrorState 
+        message={candleError}
+        onRetry={retryLocation}
+        errorType="location"
+        showRetry={true}
+        showReportIssue={true}
+      />
     );
   }
 
-  return null;
+  // Show permission request UI
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>📍 Location Permission Required</Text>
+      <Text style={styles.subtitle}>
+        This app needs your location to provide accurate weather forecasts and candle lighting times for your area.
+      </Text>
+      
+      <View style={styles.featuresContainer}>
+        <Text style={styles.featuresTitle}>What we use your location for:</Text>
+        <Text style={styles.feature}>• Accurate weather forecasts for your area</Text>
+        <Text style={styles.feature}>• Precise candle lighting times</Text>
+        <Text style={styles.feature}>• Local timezone detection</Text>
+        <Text style={styles.feature}>• City and region information</Text>
+      </View>
+
+      <TouchableOpacity style={styles.button} onPress={requestLocationPermission}>
+        <Text style={styles.buttonText}>Grant Location Permission</Text>
+      </TouchableOpacity>
+      
+      <Text style={styles.privacyNote}>
+        Your location data is only used locally and is not stored or shared with third parties.
+      </Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    justifyContent: 'center',
+    padding: 24,
     backgroundColor: '#f8f9fa',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
     color: '#212529',
+    textAlign: 'center',
+    marginBottom: 16,
   },
   subtitle: {
     fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 24,
     color: '#6c757d',
-    lineHeight: 24,
-  },
-  errorText: {
-    fontSize: 14,
-    color: '#dc3545',
     textAlign: 'center',
+    lineHeight: 22,
     marginBottom: 24,
-    paddingHorizontal: 20,
+  },
+  featuresContainer: {
+    alignSelf: 'stretch',
+    marginBottom: 32,
+  },
+  featuresTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#495057',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  feature: {
+    fontSize: 14,
+    color: '#6c757d',
+    marginBottom: 8,
+    lineHeight: 20,
   },
   button: {
-    backgroundColor: '#007bff',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-    minWidth: 200,
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginBottom: 16,
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
+  },
+  privacyNote: {
+    fontSize: 12,
+    color: '#6c757d',
     textAlign: 'center',
+    fontStyle: 'italic',
+    lineHeight: 16,
   },
 });
 

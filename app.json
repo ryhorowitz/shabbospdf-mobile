@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Erev Shabbos Weather Report",
+    "name": "Shabbos Weather",
     "slug": "shabbospdf-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,8 +13,8 @@
       "bundleIdentifier": "com.shabbospdf.weather",
       "buildNumber": "1",
       "infoPlist": {
-        "CFBundleDisplayName": "Erev Shabbos Weather",
-        "CFBundleName": "Erev Shabbos Weather Report",
+        "CFBundleDisplayName": "Shabbos Weather",
+        "CFBundleName": "Shabbos Weather",
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleVersion": "1",
         "NSLocationWhenInUseUsageDescription": "This app needs your location to provide accurate weather forecasts and candle lighting times for your area.",

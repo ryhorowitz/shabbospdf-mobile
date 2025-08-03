@@ -1,15 +1,18 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { cardStyles } from '../../constants/CommonStyles';
+import { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import CandleTimeCard from '../../components/common/CandleTimeCard';
+import ScreenLayout from '../../components/common/ScreenLayout';
+import UserFeedback from '../../components/common/UserFeedback';
+import WeatherCard from '../../components/common/WeatherCard';
+import { cardStyles, textStyles } from '../../constants/CommonStyles';
 import LocationPermissionRequest from '../components/LocationPermissionRequest';
 import { useShabbos } from '../context/shabbosContext';
 import { extractCandleItems } from '../utils/candleDataUtils';
-import { getWeatherIcon } from '../utils/weatherIconMapping';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [showFeedback, setShowFeedback] = useState(false);
   const { 
     geoData, 
     candleError, 
@@ -18,6 +21,11 @@ export default function HomeScreen() {
     getShabbosDailySummaries
   } = useShabbos();
 
+  // Show location permission request if there's an error or still loading
+  if (candleError || candleLoading) {
+    return <LocationPermissionRequest />;
+  }
+
   // Extract candle items
   const { candleItem, parshahItem, havdalahItem } = extractCandleItems(candleData || { items: [] });
   const parshahEnglish = parshahItem ? "Parshas " + parshahItem.title.split(" ")[1] : "Unknown";
@@ -25,186 +33,119 @@ export default function HomeScreen() {
   // Get weather summaries
   const { friday: fridaySummary, saturday: saturdaySummary } = getShabbosDailySummaries(candleData || { items: [] });
 
-  // Show location permission request if there's an error or still loading
-  if (candleError || candleLoading) {
-    return <LocationPermissionRequest />;
-  }
-
-  // Show main content if we have location data
   return (
-    <LinearGradient
-    colors={['#f5f5f5', '#e0e0e0']}     
-    style={styles.container}
-    >
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView style={styles.scrollView}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>גוט שבת • Good Shabbos</Text>
-          <Text style={styles.subtitle}>
-          Welcome to the Erev Shabbos Weather App! Get current weather and candle lighting times to prepare for Shabbos. Download a printable PDF and stay informed for a calm, organized Shabbos.
-          </Text>
-        </View>
+    <ScreenLayout>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={textStyles.title}>גוט שבת • Good Shabbos</Text>
+        <Text style={textStyles.subtitle}>
+          Welcome to the Shabbos Weather App! Get current weather and candle lighting times to prepare for Shabbos. Download a printable PDF and stay informed for a calm, organized Shabbos.
+        </Text>
+      </View>
 
-        {/* Main Content */}
-        <View style={styles.content}>
-          {/* Candle Times Preview */}
-          {candleItem && (
-           
-              <View style={styles.previewSection}>                
-                {/* Parshah Section */}
-                {parshahItem && (
-                  <View style={styles.parshahSection}>
-                    <Text style={styles.parshahText}>
-                      {parshahEnglish} • {parshahItem.hebrew}
-                    </Text>
-                  </View>
-                )}
+      {/* Main Content */}
+      <View style={styles.content}>
+        {/* Candle Times Preview */}
+        {candleItem && (
+          <TouchableOpacity 
+            style={styles.previewSection}
+            onPress={() => router.replace('/zmanim')}
+          >                
+            {/* Parshah Section */}
+            {parshahItem && (
+              <View style={styles.parshahSection}>
+                <Text style={styles.parshahText}>
+                  {parshahEnglish} • {parshahItem.hebrew}
+                </Text>
+              </View>
+            )}
 
-                {/* Date Section */}
-                {parshahItem && (
-                  <View style={styles.dateSection}>
-                    {parshahItem.date ? (
-                      <Text style={styles.hebrewDate}>{parshahItem.hdate}</Text>
-                    ) : (
-                      <Text style={styles.noDateText}>No Hebrew Date found.</Text>
-                    )}
-                  </View>
-                )}
-
-                {/* Location Section */}
-                {geoData && (
-                  <View style={styles.locationSection}>
-                    <Text style={styles.locationText}>
-                      📍 {geoData.city}, {geoData.region}
-                    </Text>
-                  </View>
-                )}
-              <Text style={styles.sectionTitle}>🕯️ This Week&apos;s Candle Times</Text>
-
-              <View style={styles.candlePreview}>
-                <View style={styles.candleItem}>
-                  <Text style={styles.candleLabel}>Candle Lighting</Text>
-                  <Text style={styles.candleTime}>
-                    {new Date(candleItem.date).toLocaleString('en-US', { 
-                      hour: 'numeric', 
-                      minute: '2-digit',
-                      hour12: true 
-                    })}
-                  </Text>
-                  <Text style={styles.candleDate}>
-                    {new Date(candleItem.date).toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      month: 'short', 
-                      day: 'numeric' 
-                    })}
-                  </Text>
-                </View>
-                {havdalahItem && (
-                  <View style={styles.candleItem}>
-                    <Text style={styles.candleLabel}>Havdalah</Text>
-                    <Text style={styles.candleTime}>
-                      {new Date(havdalahItem.date).toLocaleString('en-US', { 
-                        hour: 'numeric', 
-                        minute: '2-digit',
-                        hour12: true 
-                      })}
-                    </Text>
-                    <Text style={styles.candleDate}>
-                      {new Date(havdalahItem.date).toLocaleDateString('en-US', { 
-                        weekday: 'long', 
-                        month: 'short', 
-                        day: 'numeric' 
-                      })}
-                    </Text>
-                  </View>
+            {/* Date Section */}
+            {parshahItem && (
+              <View style={styles.dateSection}>
+                {parshahItem.date ? (
+                  <Text style={styles.hebrewDate}>{parshahItem.hdate}</Text>
+                ) : (
+                  <Text style={styles.noDateText}>No Hebrew Date found.</Text>
                 )}
               </View>
-            </View>
-          )}
+            )}
 
-          {/* Weather Preview */}
-          {(fridaySummary || saturdaySummary) && (
-            <TouchableOpacity 
-              style={styles.previewSection}
-              onPress={() => router.replace('/weather')}
-            >
-                <Text style={styles.sectionTitle}>🌤️ Shabbos Weather Preview</Text>
-                <View style={styles.weatherPreview}>
-                  {fridaySummary && (
-                    <View style={styles.weatherDay}>
-                      <Text style={styles.dayTitle}>Friday</Text>
-                                          <View style={styles.weatherContent}>
-                      <View style={styles.weatherTopRow}>
-                        <Text style={styles.weatherIcon}>
-                          {getWeatherIcon(fridaySummary.shortForecast, fridaySummary.isDaytime)}
-                        </Text>
-                        <Text style={styles.temperature}>
-                          {fridaySummary.temperature}°{fridaySummary.temperatureUnit || 'F'}
-                        </Text>
-                      </View>
-                      <Text style={styles.forecast} numberOfLines={2}>
-                        {fridaySummary.shortForecast}
-                      </Text>
-                    </View>
-                    </View>
-                  )}
-                  {saturdaySummary && (
-                    <View style={styles.weatherDay}>
-                      <Text style={styles.dayTitle}>Saturday</Text>
-                      <View style={styles.weatherContent}>
-                        <View style={styles.weatherTopRow}>
-                          <Text style={styles.weatherIcon}>
-                            {getWeatherIcon(saturdaySummary.shortForecast, saturdaySummary.isDaytime)}
-                          </Text>
-                          <Text style={styles.temperature}>
-                            {saturdaySummary.temperature}°{saturdaySummary.temperatureUnit || 'F'}
-                          </Text>
-                        </View>
-                        <Text style={styles.forecast} numberOfLines={2}>
-                          {saturdaySummary.shortForecast}
-                        </Text>
-                      </View>
-                    </View>
-                  )}
-                </View>
-            </TouchableOpacity>
-          )}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-    </LinearGradient>
+            {/* Location Section */}
+            {geoData && (
+              <View style={styles.locationSection}>
+                <Text style={styles.locationText}>
+                  📍 {geoData.city}, {geoData.region}
+                </Text>
+              </View>
+            )}
+
+            <Text style={textStyles.heading}>🕯️ This Week&apos;s Candle Times</Text>
+
+            <View style={styles.candlePreview}>
+              <CandleTimeCard 
+                label="Candle Lighting" 
+                date={candleItem.date} 
+              />
+              {havdalahItem && (
+                <CandleTimeCard 
+                  label="Havdalah" 
+                  date={havdalahItem.date} 
+                />
+              )}
+            </View>
+          </TouchableOpacity>
+        )}
+
+        {/* Weather Preview */}
+        {(fridaySummary || saturdaySummary) && (
+          <TouchableOpacity 
+            style={styles.previewSection}
+            onPress={() => router.replace('/weather')}
+          >
+            <Text style={textStyles.heading}>🌤️ Shabbos Weather Preview</Text>
+            <View style={styles.weatherPreview}>
+              {fridaySummary && (
+                <WeatherCard 
+                  data={fridaySummary} 
+                  title="Friday" 
+                />
+              )}
+              {saturdaySummary && (
+                <WeatherCard 
+                  data={saturdaySummary} 
+                  title="Saturday" 
+                />
+              )}
+            </View>
+          </TouchableOpacity>
+        )}
+
+        {/* Feedback Button */}
+        <TouchableOpacity 
+          style={styles.feedbackButton}
+          onPress={() => setShowFeedback(true)}
+        >
+          <Text style={styles.feedbackButtonText}>💬 Send Feedback</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Feedback Modal */}
+      <UserFeedback 
+        visible={showFeedback}
+        onClose={() => setShowFeedback(false)}
+        feedbackType="general"
+      />
+    </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
   header: {
     paddingHorizontal: 16,
     paddingTop: 0,
     paddingBottom: 8,
     backgroundColor: 'transparent',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 12,
-    color: '#1a1a1a',
-  },
-  subtitle: {
-    fontSize: 13,
-    textAlign: 'center',
-    color: '#495057',
-    lineHeight: 16,
   },
   locationText: {
     fontSize: 16,
@@ -241,35 +182,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    color: '#1a1a1a',
-  },
   candlePreview: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 8,
-  },
-  candleItem: {
-    alignItems: 'center',
-    width: '45%',
-  },
-  candleLabel: {
-    fontSize: 14,
-    color: '#6c757d',
-    marginBottom: 4,
-  },
-  candleTime: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1976d2',
-    marginBottom: 4,
-  },
-  candleDate: {
-    fontSize: 14,
-    color: '#6c757d',
   },
   parshahText: {
     fontSize: 20,
@@ -281,39 +197,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  weatherDay: {
-    ...cardStyles.weather,
-  },
-  dayTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    color: '#1a1a1a',
-  },
-  weatherContent: {
-    flexDirection: 'column',
-  },
-  weatherTopRow: {
-    flexDirection: 'row',
+  feedbackButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 8,
+    marginTop: 10,
   },
-  weatherIcon: {
-    fontSize: 36,
-    marginRight: 12,
-  },
-  temperature: {
-    fontSize: 24,
+  feedbackButtonText: {
+    color: 'white',
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#1976d2',
-    marginBottom: 4,
-  },
-  forecast: {
-    fontSize: 12,
-    color: '#6c757d',
-    lineHeight: 16,
-  },
-  card: {
-    ...cardStyles.base,
   },
 });

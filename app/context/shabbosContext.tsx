@@ -7,6 +7,7 @@ import {
   WeatherData,
   WeatherPeriod
 } from '../../types';
+import { checkNetworkConnectivity, NetworkState } from '../../utils/networkUtils';
 
 interface ShabbosContextType {
   candleData: CandleData | null;
@@ -16,6 +17,10 @@ interface ShabbosContextType {
   weatherData: WeatherData | null;
   weatherLoading: boolean;
   weatherError: string | null;
+  networkState: NetworkState;
+  isOffline: boolean;
+  retryLocation: () => void;
+  retryWeather: () => void;
   getShabbosForecasts: (candleData: CandleData) => { friday: WeatherPeriod[], saturday: WeatherPeriod[] };
   getShabbosDailySummaries: (candleData: CandleData) => { friday: any, saturday: any };
   getShabbosHourlyForecasts: (candleData: CandleData) => { friday: any[], saturday: any[] };
@@ -40,6 +45,31 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [dailyForecastData, setDailyForecastData] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherError, setWeatherError] = useState<string | null>(null);
+  const [networkState, setNetworkState] = useState<NetworkState>({
+    isConnected: true,
+    isInternetReachable: true,
+    type: 'unknown',
+    isWifi: false,
+    isCellular: false,
+  });
+  const [isOffline, setIsOffline] = useState(false);
+
+  // Monitor network connectivity
+  useEffect(() => {
+    const checkNetwork = async () => {
+      const state = await checkNetworkConnectivity();
+      setNetworkState(state);
+      setIsOffline(!state.isConnected || !state.isInternetReachable);
+    };
+
+    // Check immediately
+    checkNetwork();
+
+    // Set up interval to check every 30 seconds
+    const interval = setInterval(checkNetwork, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Get location and geo data
   useEffect(() => {
@@ -140,6 +170,13 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setCandleLoading(true);
         setCandleError(null);
         
+        // Check network connectivity before making API call
+        if (isOffline) {
+          setCandleError('No internet connection. Please check your network and try again.');
+          setCandleLoading(false);
+          return;
+        }
+        
         const [lat, lon] = geoData.loc.split(',');
         const timezone = geoData.timezone;
         
@@ -155,14 +192,24 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setCandleData(data);
       } catch (err) {
         console.error('Error fetching candle times:', err);
-        setCandleError(err instanceof Error ? err.message : 'Unknown error');
+        let errorMessage = 'Failed to fetch candle times';
+        
+        if (err instanceof Error) {
+          if (err.message.includes('fetch')) {
+            errorMessage = 'Network error. Please check your internet connection and try again.';
+          } else {
+            errorMessage = err.message;
+          }
+        }
+        
+        setCandleError(errorMessage);
       } finally {
         setCandleLoading(false);
       }
     };
 
     fetchCandleTimes();
-  }, [geoData]);
+  }, [geoData, isOffline]);
 
   // Fetch weather data when geo data is available
   useEffect(() => {
@@ -172,6 +219,13 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
       try {
         setWeatherLoading(true);
         setWeatherError(null);
+        
+        // Check network connectivity before making API call
+        if (isOffline) {
+          setWeatherError('No internet connection. Please check your network and try again.');
+          setWeatherLoading(false);
+          return;
+        }
         
         const [lat, lon] = geoData.loc.split(',');
         
@@ -206,14 +260,24 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setDailyForecastData(dailyData);
       } catch (err) {
         console.error('Error fetching weather data:', err);
-        setWeatherError(err instanceof Error ? err.message : 'Unknown error');
+        let errorMessage = 'Failed to fetch weather data';
+        
+        if (err instanceof Error) {
+          if (err.message.includes('fetch')) {
+            errorMessage = 'Network error. Please check your internet connection and try again.';
+          } else {
+            errorMessage = err.message;
+          }
+        }
+        
+        setWeatherError(errorMessage);
       } finally {
         setWeatherLoading(false);
       }
     };
 
     fetchWeatherData();
-  }, [geoData]);
+  }, [geoData, isOffline]);
 
   // Helper functions for processing data
   const getShabbosForecasts = (candleData: CandleData) => {
@@ -339,6 +403,141 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return { friday: fridayHourly, saturday: saturdayHourly };
   };
 
+  const retryLocation = () => {
+    setCandleLoading(true);
+    setCandleError(null);
+    // Re-run the location fetching logic
+    const getGeoData = async () => {
+      try {
+        // Check if location services are enabled
+        const isEnabled = await Location.hasServicesEnabledAsync();
+        if (!isEnabled) {
+          setCandleError('Location services are disabled. Please enable location services in your device settings.');
+          setCandleLoading(false);
+          return;
+        }
+
+        // Request location permissions
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setCandleError('Location permission denied. Please grant location permission to get accurate weather and candle times for your area.');
+          setCandleLoading(false);
+          return;
+        }
+
+        // Get current location with timeout and accuracy options
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+          timeInterval: 10000, // 10 second timeout
+        });
+        
+        const { latitude, longitude } = location.coords;
+        console.log(`Location: Latitude: ${latitude}, Longitude: ${longitude}`);
+        console.log('Position accuracy:', location.coords.accuracy, 'meters');
+        console.log('Location source:', location.coords.altitude ? 'GPS' : 'Simulator/Network');
+        console.log('Device timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+        // Get timezone
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        // Try to get city and region from coordinates using reverse geocoding
+        let city = 'Unknown';
+        let region = 'Unknown';
+
+        try {
+          const reverseGeocodeResponse = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+          );
+          if (reverseGeocodeResponse.ok) {
+            const geoData = await reverseGeocodeResponse.json();
+            city = geoData.city || geoData.locality || 'Unknown';
+            region = geoData.principalSubdivision || geoData.countryName || 'Unknown';
+            console.log('Reverse geocoding result:', geoData);
+          }
+        } catch (reverseError) {
+          console.error('Reverse geocoding failed:', reverseError);
+          // Fallback: use coordinates as location name
+          city = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+          region = 'Unknown';
+        }
+
+        // Create geoData object
+        const fallbackGeoData: GeoData = {
+          loc: `${latitude},${longitude}`,
+          timezone,
+          city,
+          region,
+        };
+        setGeoData(fallbackGeoData);
+        console.log('GeoData set successfully:', fallbackGeoData);
+      } catch (error) {
+        console.error('Geolocation error:', error);
+        let errorMessage = 'Failed to get location data';
+        
+        if (error instanceof Error) {
+          if (error.message.includes('timeout')) {
+            errorMessage = 'Location request timed out. Please try again.';
+          } else if (error.message.includes('permission')) {
+            errorMessage = 'Location permission denied. Please grant permission in settings.';
+          } else if (error.message.includes('unavailable')) {
+            errorMessage = 'Location services unavailable. Please check your device settings.';
+          }
+        }
+        
+        setCandleError(errorMessage);
+        setCandleLoading(false);
+      }
+    };
+    getGeoData();
+  };
+
+  const retryWeather = () => {
+    setWeatherLoading(true);
+    setWeatherError(null);
+    // Re-run the weather fetching logic
+    const fetchWeatherData = async () => {
+      try {
+        const [lat, lon] = geoData?.loc.split(',') || [];
+        
+        const response = await fetch(
+          `https://api.weather.gov/points/${lat},${lon}`
+        );
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch weather points');
+        }
+        
+        const pointsData = await response.json();
+        const hourlyForecastUrl = pointsData.properties.forecastHourly;
+        const dailyForecastUrl = pointsData.properties.forecast;
+        
+        // Fetch hourly forecast for getShabbosForecasts
+        const hourlyResponse = await fetch(hourlyForecastUrl);
+        if (!hourlyResponse.ok) {
+          throw new Error('Failed to fetch hourly weather forecast');
+        }
+        
+        const hourlyData: WeatherData = await hourlyResponse.json();
+        setWeatherData(hourlyData);
+        
+        // Fetch daily forecast for getShabbosDailySummaries
+        const dailyResponse = await fetch(dailyForecastUrl);
+        if (!dailyResponse.ok) {
+          throw new Error('Failed to fetch daily weather forecast');
+        }
+        
+        const dailyData: WeatherData = await dailyResponse.json();
+        setDailyForecastData(dailyData);
+      } catch (err) {
+        console.error('Error fetching weather data:', err);
+        setWeatherError(err instanceof Error ? err.message : 'Unknown error');
+      } finally {
+        setWeatherLoading(false);
+      }
+    };
+    fetchWeatherData();
+  };
+
   const value: ShabbosContextType = {
     candleData,
     geoData,
@@ -347,6 +546,10 @@ export const ShabbosProvider: React.FC<{ children: React.ReactNode }> = ({ child
     weatherData,
     weatherLoading,
     weatherError,
+    networkState,
+    isOffline,
+    retryLocation,
+    retryWeather,
     getShabbosForecasts,
     getShabbosDailySummaries,
     getShabbosHourlyForecasts,
