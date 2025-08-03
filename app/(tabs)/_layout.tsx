@@ -36,6 +36,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="cloud" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="zmanim"
+        options={{
+          title: 'Zmanim',
+          tabBarIcon: ({ color }) => <TabBarIcon name="clock-o" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

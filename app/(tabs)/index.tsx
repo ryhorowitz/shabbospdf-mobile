@@ -1,6 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cardStyles } from '../../constants/CommonStyles';
@@ -34,7 +33,7 @@ export default function HomeScreen() {
   // Show main content if we have location data
   return (
     <LinearGradient
-    colors={['#ff9a9e', '#fecfef']}     
+    colors={['#f5f5f5', '#e0e0e0']}     
     style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>

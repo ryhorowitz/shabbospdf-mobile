@@ -4,7 +4,7 @@ import { Platform, StyleSheet } from 'react-native';
 export const Colors = {
   primary: '#007AFF',
   secondary: '#1976d2',
-  background: '#f8f9fa',
+  background: '#f5f5f5',
   white: '#ffffff',
   text: {
     primary: '#1a1a1a',
@@ -17,8 +17,8 @@ export const Colors = {
     lighter: '#f8f9fa',
   },
   gradient: {
-    start: '#ff9a9e',
-    end: '#fecfef',
+    start: '#f5f5f5',
+    end: '#e0e0e0',
   },
 };
 
